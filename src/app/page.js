@@ -24,11 +24,9 @@ const LuxuryWoodenCaesarCipher = () => {
   const problemContainerRef = useRef(null);
   
   // 클릭 소리 효과음
-  const clickSound = new Audio("/gear.mp3");
+  // Removed redundant clickSound declaration to avoid conflicts
   const slideSoundRef = useRef(null);
-  if (!slideSoundRef.current) {
-    slideSoundRef.current = new Audio("/gear.mp3");
-  }
+ 
   // 문제 목록
   const problems = [
     { 
@@ -109,9 +107,11 @@ const LuxuryWoodenCaesarCipher = () => {
 
   // 소리 재생 함수
   const playClickSound = () => {
-    clickSound.currentTime = 0;
-    clickSound.volume = 0.3;
-    clickSound.play().catch(e => console.log("오디오 재생 오류:", e));
+    if (clickSoundRef.current) {
+      clickSoundRef.current.currentTime = 0;
+      clickSoundRef.current.volume = 0.3;
+      clickSoundRef.current.play().catch(e => console.log("오디오 재생 오류:", e));
+    }
   };
   
   const playSlideSound = () => {
