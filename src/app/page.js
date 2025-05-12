@@ -7,44 +7,71 @@ const LuxuryWoodenCaesarCipher = () => {
   const [dragStart, setDragStart] = useState(0);
   const [startShift, setStartShift] = useState(0);
   const clickSoundRef = useRef(null);
+  const successSoundRef = useRef(null);
+  const failSoundRef = useRef(null);
 
   useEffect(() => {
     clickSoundRef.current = new Audio("/gear.mp3");
+    successSoundRef.current = new Audio("/success.mp3"); // 성공 소리 효과음 추가 필요
+    failSoundRef.current = new Audio("/fail.mp3"); // 실패 소리 효과음 추가 필요
     return () => {
       if (clickSoundRef.current) {
         clickSoundRef.current.pause();
         clickSoundRef.current = null;
       }
+      if (successSoundRef.current) {
+        successSoundRef.current.pause();
+        successSoundRef.current = null;
+      }
+      if (failSoundRef.current) {
+        failSoundRef.current.pause();
+        failSoundRef.current = null;
+      }
     };
   }, []);
+  
   const [answer, setAnswer] = useState("");
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState(0);
   const slideRef = useRef(null);
   const problemContainerRef = useRef(null);
   
-  // 클릭 소리 효과음
-  // Removed redundant clickSound declaration to avoid conflicts
   const slideSoundRef = useRef(null);
  
-  // 문제 목록
+  // 문제 목록 - 정답 추가
   const problems = [
     { 
       text: "[문제1] 평문 \"HELLO\"를 시저 암호로 3만큼 오른쪽으로 밀어 암호화하시오.", 
-      hint: "각 알파벳을 3칸씩 이동하면 A는 D, B는 E, C는 F가 됩니다." 
+      hint: "각 알파벳을 3칸씩 이동하면 A는 D, B는 E, C는 F가 됩니다.",
+      correctAnswer: "KHOOR",
+      shiftValue: 3
     },
     { 
       text: "[문제2] - 난이도 하 시저 암호 \"VHFXULWB\"는 시프트 3만큼 오른쪽으로 이동한 평문이다. 원래의 문장을 복원하시오.", 
-      hint: "복호화는 암호화의 반대 방향으로 시프트합니다." 
+      hint: "복호화는 암호화의 반대 방향으로 시프트합니다.",
+      correctAnswer: "SECURITY",
+      shiftValue: 3
     },
     { 
       text: "[문제3] 시저 암호 \"lezi e rmgi hec\"는 어떤 평문을 암호화한 것이다. 시프트 4를 적용하여 원래 평문을 구하시오.", 
-      hint: "모든 알파벳이 소문자인 경우에도 동일한 규칙이 적용됩니다." 
+      hint: "모든 알파벳이 소문자인 경우에도 동일한 규칙이 적용됩니다.",
+      correctAnswer: "have a nice day",
+      shiftValue: 4
     }
   ];
   
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const shiftedAlphabet = alphabet.slice(shift) + alphabet.slice(0, shift);
+
+  // 문제 변경 시 상태 리셋
+  useEffect(() => {
+    setAnswer("");
+    setIsCorrect(null);
+    setShowCorrectAnswer(false);
+    setShift(problems[currentProblemIndex].shiftValue || 0);
+  }, [currentProblemIndex]);
 
   // 드래그 시작 처리
   const handleDragStart = (e) => {
@@ -105,7 +132,7 @@ const LuxuryWoodenCaesarCipher = () => {
     document.removeEventListener('touchend', handleDragEnd);
   };
 
-  // 소리 재생 함수
+  // 소리 재생 함수들
   const playClickSound = () => {
     if (clickSoundRef.current) {
       clickSoundRef.current.currentTime = 0;
@@ -114,10 +141,28 @@ const LuxuryWoodenCaesarCipher = () => {
     }
   };
   
+  const playSuccessSound = () => {
+    if (successSoundRef.current) {
+      successSoundRef.current.currentTime = 0;
+      successSoundRef.current.volume = 0.5;
+      successSoundRef.current.play().catch(e => console.log("오디오 재생 오류:", e));
+    }
+  };
+  
+  const playFailSound = () => {
+    if (failSoundRef.current) {
+      failSoundRef.current.currentTime = 0;
+      failSoundRef.current.volume = 0.5;
+      failSoundRef.current.play().catch(e => console.log("오디오 재생 오류:", e));
+    }
+  };
+  
   const playSlideSound = () => {
-    slideSoundRef.current.currentTime = 0;
-    slideSoundRef.current.volume = 0.5;
-    slideSoundRef.current.play().catch(e => console.log("오디오 재생 오류:", e));
+    if (slideSoundRef.current) {
+      slideSoundRef.current.currentTime = 0;
+      slideSoundRef.current.volume = 0.5;
+      slideSoundRef.current.play().catch(e => console.log("오디오 재생 오류:", e));
+    }
   };
 
   // 시프트 버튼으로 정확하게 한 글자씩 조정
@@ -163,6 +208,27 @@ const LuxuryWoodenCaesarCipher = () => {
       setCurrentProblemIndex(prev => prev + 1);
       playSlideSound();
     }
+  };
+  
+  // 정답 확인 함수
+  const checkAnswer = () => {
+    const currentProblem = problems[currentProblemIndex];
+    const userAnswer = answer.trim().toLowerCase();
+    const correctAnswer = currentProblem.correctAnswer.toLowerCase();
+    
+    const isAnswerCorrect = userAnswer === correctAnswer;
+    setIsCorrect(isAnswerCorrect);
+    
+    if (isAnswerCorrect) {
+      playSuccessSound();
+    } else {
+      playFailSound();
+    }
+  };
+  
+  // 정답 보기 토글
+  const toggleShowAnswer = () => {
+    setShowCorrectAnswer(!showCorrectAnswer);
   };
 
   // 이벤트 리스너 정리
@@ -248,6 +314,26 @@ const LuxuryWoodenCaesarCipher = () => {
           color: #D4AF37;
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6), 0 0 10px rgba(218, 165, 32, 0.4);
         }
+        
+        @keyframes pulse-green {
+          0%, 100% { border-color: rgba(22, 163, 74, 0.7); }
+          50% { border-color: rgba(22, 163, 74, 1); box-shadow: 0 0 15px rgba(22, 163, 74, 0.7); }
+        }
+        
+        @keyframes pulse-red {
+          0%, 100% { border-color: rgba(220, 38, 38, 0.7); }
+          50% { border-color: rgba(220, 38, 38, 1); box-shadow: 0 0 15px rgba(220, 38, 38, 0.7); }
+        }
+        
+        .correct-answer {
+          animation: pulse-green 2s infinite;
+          border: 3px solid rgba(22, 163, 74, 0.7);
+        }
+        
+        .wrong-answer {
+          animation: pulse-red 2s infinite;
+          border: 3px solid rgba(220, 38, 38, 0.7);
+        }
       `}</style>
       
       <div 
@@ -309,26 +395,70 @@ const LuxuryWoodenCaesarCipher = () => {
             <p className="text-sm text-amber-300 italic mt-4 korean-font">
               힌트: {problems[currentProblemIndex].hint}
             </p>
+            
+            {/* 정답 표시 (토글) */}
+            {showCorrectAnswer && (
+              <div className="mt-4 p-3 bg-amber-900/40 rounded-lg border border-amber-600">
+                <p className="text-amber-200 korean-font">
+                  <span className="font-bold">정답:</span> {problems[currentProblemIndex].correctAnswer}
+                </p>
+              </div>
+            )}
           </div>
           
-          {/* 메모 입력 칸 */}
+          {/* 정답 입력 칸 */}
           <div className="mt-4">
-            <div className="flex items-center">
-              <span className="korean-font text-amber-200 mr-2">메모하기:</span>
+            <div className="flex items-center mb-2">
+              <span className="korean-font text-amber-200 mr-2">정답:</span>
               <input
                 type="text"
-                className="flex-1 p-3 bg-amber-100 border-2 border-amber-800 rounded font-mono text-amber-900"
-                placeholder="여기에 메모할 내용을 입력하세요..."
+                className={`flex-1 p-3 bg-amber-100 border-2 border-amber-800 rounded font-mono text-amber-900 ${
+                  isCorrect === true ? 'correct-answer' : 
+                  isCorrect === false ? 'wrong-answer' : ''
+                }`}
+                placeholder="여기에 정답을 입력하세요..."
                 value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
+                onChange={(e) => {
+                  setAnswer(e.target.value);
+                  setIsCorrect(null); // 입력 시 결과 리셋
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    checkAnswer();
+                  }
+                }}
               />
+            </div>
+            
+            {/* 정답 확인 결과 */}
+            {isCorrect !== null && (
+              <div className={`mt-2 p-2 rounded-lg text-center korean-font ${
+                isCorrect ? 'bg-green-800/60 text-green-200' : 'bg-red-800/60 text-red-200'
+              }`}>
+                {isCorrect ? '정답입니다! 🎉' : '틀렸습니다. 다시 시도해보세요. 😓'}
+              </div>
+            )}
+            
+            {/* 버튼 그룹 */}
+            <div className="flex flex-wrap justify-end gap-2 mt-3">
+              <button
+                onClick={checkAnswer}
+                className="px-4 py-2 bg-amber-700 hover:bg-amber-600 text-amber-100 rounded-lg shadow-md korean-font transition-colors"
+              >
+                정답 확인
+              </button>
+              
+              {/* <button
+                onClick={toggleShowAnswer}
+                className="px-4 py-2 bg-amber-800 hover:bg-amber-700 text-amber-100 rounded-lg shadow-md korean-font transition-colors"
+              >
+                {showCorrectAnswer ? '정답 숨기기' : '정답 보기'}
+              </button> */}
             </div>
           </div>
           
-
-          
           {/* 스와이프 힌트 */}
-          <div className="text-amber-400/50 text-xs italic text-center mt-2 korean-font">
+          <div className="text-amber-400/50 text-xs italic text-center mt-5 korean-font">
             ← 좌우로 스와이프하여 다른 문제 보기 →
           </div>
         </div>
@@ -416,6 +546,22 @@ const LuxuryWoodenCaesarCipher = () => {
           </div>
         </div>
         
+        {/* 메모장 영역 추가 */}
+        <div
+          className="w-full p-4 rounded-lg shadow-md mb-6"
+          style={{
+            backgroundImage: "url('/wood-texture.jpg')",
+            backgroundColor: "#3D2E22",
+            boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.3)"
+          }}
+        >
+          <h2 className="font-bold text-lg mb-2 text-amber-200 korean-font">메모장:</h2>
+          <textarea
+            className="w-full h-20 p-3 bg-amber-100/90 border-2 border-amber-800 rounded font-mono text-amber-900 resize-y"
+            placeholder="여기에 작업 과정이나 메모를 자유롭게 작성하세요..."
+          ></textarea>
+        </div>
+        
         {/* 설명 */}
         <div 
           className="w-full p-4 rounded-lg shadow-md text-amber-100"
@@ -432,6 +578,8 @@ const LuxuryWoodenCaesarCipher = () => {
             <li>암호문의 각 글자를 위쪽 원본 알파벳에서 찾고, 바로 아래 시프트된 알파벳에서 대응하는 글자를 확인합니다.</li>
             <li>문제를 좌우로 스와이프하여 다른 문제로 이동할 수 있습니다.</li>
             <li>해독한 메시지를 정답란에 입력하세요.</li>
+            <li>'정답 확인' 버튼을 눌러 정답을 확인하거나, Enter 키를 누르세요.</li>
+            <li>메모장에 작업 과정을 자유롭게 기록할 수 있습니다.</li>
           </ol>
         </div>
       </div>
