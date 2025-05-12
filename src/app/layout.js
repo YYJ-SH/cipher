@@ -1,6 +1,5 @@
 
 import "./globals.css";
-import { Inter } from "next/font/google";
 
 export const metadata = {
   title: "시저암호 해독기",

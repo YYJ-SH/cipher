@@ -293,7 +293,7 @@ const LuxuryWoodenCaesarCipher = () => {
     <div 
       className="min-h-screen p-4 bg-cover bg-center flex flex-col items-center justify-center" 
       style={{
-        backgroundImage: "url('/wood-texture.jpg')",
+        backgroundImage: "url('/image.png')",
         backgroundColor: "#4B3621"
       }}
     >
@@ -353,7 +353,7 @@ const LuxuryWoodenCaesarCipher = () => {
           ref={problemContainerRef}
           className="w-full mb-6 p-5 rounded-lg shadow-inner relative overflow-hidden"
           style={{
-            backgroundImage: "url('/wood-texture.jpg')",
+            backgroundImage: "url('/image.png')",
             backgroundColor: "#3D2E22",
             boxShadow: "inset 0 0 15px rgba(0, 0, 0, 0.5)"
           }}
@@ -467,7 +467,7 @@ const LuxuryWoodenCaesarCipher = () => {
         <div 
           className="w-full bg-amber-800 rounded-lg p-5 shadow-lg mb-6 border-4 border-amber-900" 
           style={{
-            backgroundImage: "url('/wood-texture.jpg')",
+            backgroundImage: "url('/image.png')",
             boxShadow: "inset 0 0 15px rgba(0, 0, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3)"
           }}
         >
@@ -550,7 +550,7 @@ const LuxuryWoodenCaesarCipher = () => {
         <div
           className="w-full p-4 rounded-lg shadow-md mb-6"
           style={{
-            backgroundImage: "url('/wood-texture.jpg')",
+            backgroundImage: "url('/image.png')",
             backgroundColor: "#3D2E22",
             boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.3)"
           }}
@@ -566,7 +566,7 @@ const LuxuryWoodenCaesarCipher = () => {
         <div 
           className="w-full p-4 rounded-lg shadow-md text-amber-100"
           style={{
-            backgroundImage: "url('/wood-texture.jpg')",
+            backgroundImage: "url('/image.png')",
             backgroundColor: "#3D2E22",
             boxShadow: "inset 0 0 10px rgba(0, 0, 0, 0.3)"
           }}
