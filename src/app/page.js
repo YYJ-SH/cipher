@@ -46,19 +46,19 @@ const LuxuryWoodenCaesarCipher = () => {
       text: "[문제1] 평문 \"HELLO\"를 시저 암호로 3만큼 오른쪽으로 밀어 암호화하시오.", 
       hint: "각 알파벳을 3칸씩 이동하면 A는 D, B는 E, C는 F가 됩니다.",
       correctAnswer: "KHOOR",
-      shiftValue: 3
+      shiftValue: 1
     },
     { 
-      text: "[문제2] - 난이도 하 시저 암호 \"VHFXULWB\"는 시프트 3만큼 오른쪽으로 이동한 평문이다. 원래의 문장을 복원하시오.", 
+      text: "[문제2] 시저 암호 \"VHFXULWB\"는 시프트 3만큼 오른쪽으로 이동한 평문이다. 원래의 문장을 복원하시오.", 
       hint: "복호화는 암호화의 반대 방향으로 시프트합니다.",
       correctAnswer: "SECURITY",
-      shiftValue: 3
+      shiftValue: 1
     },
     { 
       text: "[문제3] 시저 암호 \"lezi e rmgi hec\"는 어떤 평문을 암호화한 것이다. 시프트 4를 적용하여 원래 평문을 구하시오.", 
       hint: "모든 알파벳이 소문자인 경우에도 동일한 규칙이 적용됩니다.",
       correctAnswer: "have a nice day",
-      shiftValue: 4
+      shiftValue: 1
     }
   ];
   
@@ -293,7 +293,7 @@ const LuxuryWoodenCaesarCipher = () => {
     <div 
       className="min-h-screen p-4 bg-cover bg-center flex flex-col items-center justify-center" 
       style={{
-        backgroundImage: "url('/image.png')",
+        // backgroundImage: "url('/image.png')",
         backgroundColor: "#4B3621"
       }}
     >
@@ -467,7 +467,7 @@ const LuxuryWoodenCaesarCipher = () => {
         <div 
           className="w-full bg-amber-800 rounded-lg p-5 shadow-lg mb-6 border-4 border-amber-900" 
           style={{
-            backgroundImage: "url('/image.png')",
+            // backgroundImage: "url('/image.png')",
             boxShadow: "inset 0 0 15px rgba(0, 0, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3)"
           }}
         >
